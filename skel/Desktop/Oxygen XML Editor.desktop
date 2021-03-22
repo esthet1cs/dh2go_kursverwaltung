@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Oxygen XML Editor
+Comment=
+Exec=/opt/oxygen22/oxygen/oxygen.sh
+Icon=/opt/oxygen20/oxygen/Oxygen128.png
+Path=~/
+Terminal=false
+StartupNotify=false
