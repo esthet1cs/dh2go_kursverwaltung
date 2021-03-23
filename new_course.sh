@@ -32,8 +32,16 @@ mkdir /srv/$GROUP/Austauschordner
 # add symbolic link to course folder to the skel folder
 ln -s /srv/$GROUP $BASEDIR/skel/Desktop/
 
-# add teacher account
-adduser --conf adduser.conf --geco "" --disabled-login $line
+# TODO
+# if TEACHER account exists, then
+# add to course group
+# put symbolic links to the course folder on their Desktop
+
+# else add TEACHER account 
+adduser --conf adduser.conf --geco "" --disabled-login $TEACHER
+
+
+
 
 # change rights for course folders
 chown -R $TEACHER:$GROUP /srv/$GROUP
