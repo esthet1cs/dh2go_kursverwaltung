@@ -52,7 +52,7 @@ python3 new_course.py
 
 while read line; do
 	while IFS=':' read -ra USERPASS; do		# read user:pass
-		USER="{$USERPASS[0]}"					# extract username
+		USER="${USERPASS[0]}"					# extract username
 		# check if user exists
 		if id -u "$USER" &>/dev/null; then		# if yes, then
 			adduser $USER $GROUP						# add user to course group
@@ -66,6 +66,6 @@ while read line; do
 		ln -s /home/.srv/$GROUP /home/$USER/Desktop/	 # add course folder to user's Desktop
 		chown -h $USER:$USER /home/$USER/Desktop/$GROUP	# give ownership for symlink to the user
 	done <<< $line
-done < user.list
+done < user.pass
 	
 
