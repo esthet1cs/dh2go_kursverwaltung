@@ -32,6 +32,7 @@ if id -u "$TEACHER" &>/dev/null; then
 else
 adduser --conf adduser.conf --geco "" --disabled-login $TEACHER
 # add symbolic link to course folder 
+fi
 
 # add course folders
 mkdir /home/.srv/$GROUP
