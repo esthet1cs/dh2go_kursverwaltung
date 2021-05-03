@@ -49,25 +49,23 @@ chmod 770 /home/.srv/$GROUP/Austauschordner
 python3 new_course.py
 
 
-# add users 
-while read user
-do
-	# check if user exists
-	if id -u "$user" &>/dev/null; then		# if yes, then
-		adduser $user $GROUP						# add user to course group
-	else
-		adduser --conf adduser.conf --geco "" --disabled-login $user	# add user
-	fi
 
-	ln -s /home/.srv/$GROUP /home/$user/Desktop/	 # add course folder to user's Desktop
-	chown -h $user:$user /home/$user/Desktop/$GROUP	# give ownership for symlink to the user
+while read line; do
+	while IFS=':' read -ra USERPASS; do		# read user:pass
+		USER="{$USERPASS[0]}"					# extract username
+		# check if user exists
+		if id -u "$USER" &>/dev/null; then		# if yes, then
+			adduser $USER $GROUP						# add user to course group
+			echo "Added existing $USER to $GROUP."
+		else
+			adduser --conf adduser.conf --geco "" --disabled-login $USER	# add user
+			chpasswd $line								# change password
+			echo "Added new user $USER."
+		fi
 
+		ln -s /home/.srv/$GROUP /home/$USER/Desktop/	 # add course folder to user's Desktop
+		chown -h $USER:$USER /home/$USER/Desktop/$GROUP	# give ownership for symlink to the user
+	done <<< $line
 done < user.list
-
-# set all users passwords according to user.pass
-while read line
-	do 
-		chpasswd $line
-	done < user.pass
-
+	
 
