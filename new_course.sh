@@ -24,41 +24,44 @@ BASEDIR=$(pwd)
 # add course group
 addgroup $GROUP
 
-# add course folders
-mkdir /srv/$GROUP
-mkdir /srv/$GROUP/Kursmaterial
-mkdir /srv/$GROUP/Austauschordner
-
-# add symbolic link to course folder to the skel folder
-ln -s /srv/$GROUP $BASEDIR/skel/Desktop/
-
 # TODO
 # if TEACHER account exists, then
-# add to course group
-# put symbolic links to the course folder on their Desktop
-
+if id -u "$TEACHER" &>/dev/null; then
+	adduser $TEACHER $GROUP						# add teacher to course group
 # else add TEACHER account 
+else
 adduser --conf adduser.conf --geco "" --disabled-login $TEACHER
+# add symbolic link to course folder 
 
-
+# add course folders
+mkdir /home/.srv/$GROUP
+mkdir /home/.srv/$GROUP/Kursmaterial
+mkdir /home/.srv/$GROUP/Austauschordner
 
 
 # change rights for course folders
-chown -R $TEACHER:$GROUP /srv/$GROUP
-chmod 750 /srv/$GROUP
-chmod 770 /srv/$GROUP/Austauschordner
+chown -R $TEACHER:$GROUP /home/.srv/$GROUP		# 
+chmod -R 750 /home/.srv/$GROUP						# 
+chmod 770 /home/.srv/$GROUP/Austauschordner
 
 # build userlist and user:pass list
 python3 new_course.py
 
 
 # add users 
-while read line
+while read user
 do
-	echo $line
-	adduser --conf adduser.conf --geco "" --disabled-login $line
-done < user.list
+	# check if user exists
+	if id -u "$user" &>/dev/null; then		# if yes, then
+		adduser $user $GROUP						# add user to course group
+	else
+		adduser --conf adduser.conf --geco "" --disabled-login $user	# add user
+	fi
 
+	ln -s /home/.srv/$GROUP /home/$user/Desktop/	 # add course folder to user's Desktop
+	chown -h $user:$user /home/$user/Desktop/$GROUP	# give ownership for symlink to the user
+
+done < user.list
 
 # set all users passwords according to user.pass
 while read line
