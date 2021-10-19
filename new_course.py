@@ -52,7 +52,8 @@ else:
         passwords.append(make_pw(8))
         
     df["Passwort"] = passwords                                      # construct passwords columns = random password for each user
-    df['userlist'] = df.Nutzungskennung + ':' + df.Passwort         # construct user:pass column for the user:pass file
+
+df['userlist'] = df.Nutzungskennung + ':' + df.Passwort         # construct user:pass column for the user:pass file
 
 
 ### export to file
