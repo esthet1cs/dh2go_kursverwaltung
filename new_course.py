@@ -37,7 +37,7 @@ df = pd.read_csv('teiln.csv')                                   # read data from
 
 ### construct additional columns: usernames, passwords, user:pass
 
-df.Nutzungskennung = df.Name.apply(lambda x: make_nk(x))                # construct usernames column
+df['Nutzungskennung'] = df.Name.apply(lambda x: make_nk(x))                # construct usernames column
 df.Nutzungskennung = df.Nutzungskennung.apply(lambda x: unidecode(x))    # change non-ascii-characters to ascii-compatible chars
 
 # expecting: user list either has Matrikelnummer for all participants, or the column does not exist
