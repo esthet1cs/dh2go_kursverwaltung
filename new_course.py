@@ -44,7 +44,7 @@ df.Nutzungskennung = df.Nutzungskennung.apply(lambda x: unidecode(x))    # chang
 # check if we have Matrikelnummern
 # if we do, use them to construct the initial password with m + Matrikelnummer
 if 'Matrikelnummer' in df.columns:
-    df['Passwort'] = df.Matrikelnummer.apply(lambda x: 'm' + x)
+    df['Passwort'] = df.Matrikelnummer.apply(lambda x: 'm' + str(x))
 # if no Matrikelnummern
 else:
     passwords = []                                                  # make a list with passwords matching the length of the user list
