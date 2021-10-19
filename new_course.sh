@@ -45,15 +45,21 @@ chown -R $TEACHER:$GROUP /home/.srv/$GROUP		#
 chmod -R 750 /home/.srv/$GROUP						# 
 chmod 770 /home/.srv/$GROUP/Austauschordner
 
+# put course folder onto teacher's desktop
+ln -s /home/.srv/$GROUP /home/$USER/Desktop/	 # add course folder to user's Desktop
+chown -h $USER:$USER /home/$USER/Desktop/$GROUP	# give ownership for symlink to the user
+
 # build userlist and user:pass list
 python3 new_course.py
 
-
+# go through the list of participants
+# add accounts if necessary
+# put course folders onto user's desktops
 
 while read line; do
 	while IFS=':' read -ra USERPASS; do		# read user:pass
 		USER="${USERPASS[0]}"					# extract username
-		# check if user exists
+														# check if user exists
 		if id -u "$USER" &>/dev/null; then		# if yes, then
 			adduser $USER $GROUP						# add user to course group
 			echo "Added existing $USER to $GROUP."

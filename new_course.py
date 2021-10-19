@@ -40,12 +40,19 @@ df = pd.read_csv('teiln.csv')                                   # read data from
 df.Nutzungskennung = df.Name.apply(lambda x: make_nk(x))                # construct usernames column
 df.Nutzungskennung = df.Nutzungskennung.apply(lambda x: unidecode(x))    # change non-ascii-characters to ascii-compatible chars
 
-passwords = []                                                  # make a list with passwords matching the length of the user list
-for i in range(len(df)):
-    passwords.append(make_pw(8))
-    
-df["Passwort"] = passwords                                      # construct passwords columns = random password for each user
-df['userlist'] = df.Nutzungskennung + ':' + df.Passwort         # construct user:pass column for the user:pass file
+# expecting: user list either has Matrikelnummer for all participants, or the column does not exist
+# check if we have Matrikelnummern
+# if we do, use them to construct the initial password with m + Matrikelnummer
+if 'Matrikelnummer' in df.columns:
+    df['Passwort'] = df.Matrikelnummer.apply(lambda x: 'm' + x)
+# if no Matrikelnummern
+else:
+    passwords = []                                                  # make a list with passwords matching the length of the user list
+    for i in range(len(df)):
+        passwords.append(make_pw(8))
+        
+    df["Passwort"] = passwords                                      # construct passwords columns = random password for each user
+    df['userlist'] = df.Nutzungskennung + ':' + df.Passwort         # construct user:pass column for the user:pass file
 
 
 ### export to file
@@ -62,8 +69,5 @@ with open('user.pass', 'w') as f:           # user.pass
 df.to_csv('teiln_full.csv')                 # full participant csv file with usernames and initial passwords
 
 
-### admin action out of python
-
-# tbc
 
 
