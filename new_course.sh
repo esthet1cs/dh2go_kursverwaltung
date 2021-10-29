@@ -13,18 +13,18 @@
 
 # variables - please fill out for every new course
 
-GROUP="dh2go_ws"
-TEACHER="vagrant"
+KURS="kursname"
+TEACHER="account_lehrperson"
 
 ######################################
 
 # get base location 
 BASEDIR=$(pwd)
+GROUP=$(echo $KURS | tr [:upper:] [:lower:])	# we need the course name in lower letters for the group
 
 # add course group
 addgroup $GROUP
 
-# TODO
 # if TEACHER account exists, then
 if id -u "$TEACHER" &>/dev/null; then
 	adduser $TEACHER $GROUP						# add teacher to course group
@@ -35,15 +35,19 @@ adduser --conf adduser.conf --geco "" --disabled-login $TEACHER
 fi
 
 # add course folders
-mkdir /home/.srv/$GROUP
-mkdir /home/.srv/$GROUP/Kursmaterial
-mkdir /home/.srv/$GROUP/Austauschordner
+mkdir /home/.srv/$KURS
+mkdir /home/.srv/$KURS/Kursmaterial
+mkdir /home/.srv/$KURS/Austauschordner
 
 
 # change rights for course folders
-chown -R $TEACHER:$GROUP /home/.srv/$GROUP		# 
-chmod -R 750 /home/.srv/$GROUP						# 
-chmod 770 /home/.srv/$GROUP/Austauschordner
+chown -R $TEACHER:$GROUP /home/.srv/$KURS		# 
+chmod -R 750 /home/.srv/$KURS						# 
+chmod 770 /home/.srv/$KURS/Austauschordner
+
+# add course folders to teacher's Desktop
+ln -s /home/.srv/$KURS /home/$TEACHER/Desktop/	 
+chown -h $TEACHER:$TEACHER /home/$TEACHER/Desktop/$KURS	# give ownership for symlink to the user
 
 # put course folder onto teacher's desktop
 ln -s /home/.srv/$GROUP /home/$USER/Desktop/	 # add course folder to user's Desktop
@@ -69,9 +73,7 @@ while read line; do
 			echo "Added new user $USER."
 		fi
 
-		ln -s /home/.srv/$GROUP /home/$USER/Desktop/	 # add course folder to user's Desktop
-		chown -h $USER:$USER /home/$USER/Desktop/$GROUP	# give ownership for symlink to the user
+		ln -s /home/.srv/$KURS /home/$USER/Desktop/	 # add course folder to user's Desktop
+		chown -h $USER:$USER /home/$USER/Desktop/$KURS	# give ownership for symlink to the user
 	done <<< $line
 done < user.pass
-	
-
